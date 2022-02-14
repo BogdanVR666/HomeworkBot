@@ -39,6 +39,8 @@ if pupil:
         for i, j in zip(lessons, homeworks):
             if "1." in i: result.write("\n")
             result.write(i + " " + j + "\n")
+    
+    print(lessons, homeworks)
 
 else:
     print("Не удалось подключиться, перезапустите парсер")
