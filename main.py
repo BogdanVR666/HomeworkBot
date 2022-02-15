@@ -33,12 +33,15 @@ if pupil:
 
     lessons = [" ".join(str(i.text).split()) for i in pupil_bs.select("td.lesson > span") \
                if len(" ".join(str(i.text).split())) > 3]
-    homeworks = [" ".join(str(i.text).split()) for i in pupil_bs.select(".ht-text")]
+    homeworks = [" ".join(str(i.text).split()) for i in pupil_bs.select("td.ht")]
+    days = [i.text for i in pupil_bs.select('th.lesson')]
 
     with open("homeworks.txt", "w", encoding="UTF-8") as result:
         for i, j in zip(lessons, homeworks):
-            if "1." in i: result.write("\n")
+            if "1." in i: result.write(f"\n")
             result.write(i + " " + j + "\n")
+    
+    print(lessons, homeworks)
 
 else:
     print("Не удалось подключиться, перезапустите парсер")
