@@ -1,6 +1,7 @@
 import requests
 from urllib3 import disable_warnings
 from bs4 import BeautifulSoup
+from rich import print
 
 disable_warnings()
 session = requests.Session()
@@ -19,29 +20,29 @@ FormData = {
 
 domen = "https://school-5p.e-schools.info"
 
-answer = session.post(domen + "/login_", data=FormData)
-answer_bs = BeautifulSoup(answer.content, "html.parser")
-pupils = answer_bs.select("a.user_type_1")
+pupil = None
 
-pupil = domen + pupils[0]["href"] + "/dnevnik/quarter/28553" if pupils else None
+while not pupil:
+    answer = session.post(domen + "/login_", data=FormData)
+    answer_bs = BeautifulSoup(answer.content, "html.parser")
+    pupils = answer_bs.select("a.user_type_1")
+    pupil = domen + pupils[0]["href"] + "/dnevnik/quarter/28553" if pupils else None
 
-if pupil:
-    pupil_bs = BeautifulSoup(session.get(pupil).content, "html.parser")
+pupil_bs = BeautifulSoup(session.get(pupil).content, "html.parser")
 
-    with open("parsed.html", "w", encoding="UTF-8") as file:
-        file.write(str(pupil_bs))
+with open("parsed.html", "w", encoding="UTF-8") as file:
+    file.write(str(pupil_bs))
 
-    lessons = [" ".join(str(i.text).split()) for i in pupil_bs.select("td.lesson > span") \
-               if len(" ".join(str(i.text).split())) > 3]
-    homeworks = [" ".join(str(i.text).split()) for i in pupil_bs.select("td.ht")]
-    days = [i.text for i in pupil_bs.select('th.lesson')]
+lessons = [" ".join(str(i.text).split()) for i in pupil_bs.select("td.lesson > span")]
+homeworks = [" ".join(str(i.text).split()) for i in pupil_bs.select("td.ht")]
+days = [i.text for i in pupil_bs.select('th.lesson')]
 
-    with open("homeworks.txt", "w", encoding="UTF-8") as result:
-        for i, j in zip(lessons, homeworks):
-            if "1." in i: result.write(f"\n")
-            result.write(i + " " + j + "\n")
-    
-    print(lessons, homeworks)
+with open("homeworks.txt", "w", encoding="UTF-8") as result:
+    x = 0
+    for i, j in zip(lessons, homeworks):
+        if "1." in i and "11." not in i:
+            result.write(f"\n{days[x]}\n")
+            x += 1
+        result.write(f"{i} {j}\n") if len(i) > 3 else None
 
-else:
-    print("Не удалось подключиться, перезапустите парсер")
+print('[green]Программа завершена успешно. Расписание в файле homeworks.txt[/green]')
