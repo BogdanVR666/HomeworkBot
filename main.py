@@ -48,9 +48,9 @@ def create_table(days, lessons, homeworks):
     for i in zip(lessons, homeworks):
         score += 1 if "1." in i[0] and "11." not in i[0] else 0
         try:
-            result[days[score].split()[0]].append(i)
+            result[days[score].split()[0]].append((int(i[0][0]), i[0].split(maxsplit=1)[-1] if len(i[0]) > 3 else '', i[1]))
         except KeyError:
-            result[days[score].split()[0]] = [int(days[score][-2:]), i]
+            result[days[score].split()[0]] = [int(days[score][-2:]), (int(i[0][0]), i[0].split(maxsplit=1)[-1] if len(i[0]) > 3 else '', i[1])]
     
     return result
 
