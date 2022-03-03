@@ -7,14 +7,16 @@ from pprint import pprint
 disable_warnings()
 session = requests.Session()
 
+csrfclass = 'csrfmiddlewaretoken'
+
 # getting CSRF
 auth_html = session.get("https://school-5p.e-schools.info/login_", verify=False)
 auth_bs = BeautifulSoup(auth_html.content, "html.parser")
-csrf = auth_bs.select("input[name=csrfmiddlewaretoken]")[0]["value"]
+csrf = auth_bs.select(f"input[name={csrfclass}]")[0]["value"]
 
 # logging in
 FormData = {
-    "csrfmiddlewaretoken": csrf,
+    csrfclass: csrf,
     "username": "BogdanVR666",
     "password": "BogdanVR1"
 }
@@ -25,7 +27,7 @@ result_link = '/dnevnik/quarter/28553'
 
 
 def update_site(filename):
-    assert filename[-1:-6:-1][::-1] == '.html', "type is not html"
+    assert filename[-5:] == '.html', "type is not html"
     
     with open(filename, "w", encoding="UTF-8") as file:
         file.write(str(pupil_bs))
@@ -48,9 +50,13 @@ def create_table(days, lessons, homeworks):
     for i in zip(lessons, homeworks):
         score += 1 if "1." in i[0] and "11." not in i[0] else 0
         try:
-            result[days[score].split()[0]].append((int(i[0][0]), i[0].split(maxsplit=1)[-1] if len(i[0]) > 3 else '', i[1]))
+            result[days[score].split()[0]].append((int(i[0][0]), 
+                                                   i[0].split(maxsplit=1)[-1] if len(i[0]) > 3 else '', 
+                                                   i[1]))
         except KeyError:
-            result[days[score].split()[0]] = [int(days[score][-2:]), (int(i[0][0]), i[0].split(maxsplit=1)[-1] if len(i[0]) > 3 else '', i[1])]
+            result[days[score].split()[0]] = [int(days[score][-2:]), 
+                                              (int(i[0][0]), 
+                                               i[0].split(maxsplit=1)[-1] if len(i[0]) > 3 else '', i[1])]
     
     return result
 
