@@ -78,12 +78,18 @@ class SchoolParser:
 
 
 school5p = SchoolParser(site, FormData)
+print('school5p SchoolParser initialised')
+
 user_site = school5p.connect('https://school-5p.e-schools.info/login_', user_css_block, weekler_link)
+print('site connected')
+
 pupil_bs = BeautifulSoup(session.get(user_site).content, "html.parser")
+print('pupil_bs BeutifulSoup initialised')
+
 week_days = [i.text for i in pupil_bs.select('th.lesson')]
 days_lessons = [" ".join(str(i.text).split()) for i in pupil_bs.select("td.lesson > span")]
 lessons_homeworks = [" ".join(str(i.text).split()) for i in pupil_bs.select("td.ht")]
-
+print('school data initialised')
 
 if __name__ == '__main__':
     update_site('parsed.html')
