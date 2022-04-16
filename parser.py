@@ -20,13 +20,9 @@ FormData = {
     "password": "BogdanVR1"
 }
 
-site = "https://school-5p.e-schools.info"
-user_css_block = 'a.user_type_1'
-weekler_link = '/dnevnik/quarter/28553'
-
 
 def update_site(filename):
-    assert filename[-5:] == '.html', "type is not html"
+    assert filename.endswith('.html'), "type is not html"
 
     with open(filename, "w", encoding="UTF-8") as file:
         file.write(str(pupil_bs))
@@ -59,32 +55,16 @@ def create_table(days: list, lessons: list, homeworks: list):
 
     return result
 
+responce = 0
+while responce != 200:
+    school5p = session.post("https://school-5p.e-schools.info/login_", data=FormData)
+    responce = school5p.status_code
 
-class SchoolParser:
-    def __init__(self, domen: str, login: dict):
-        self.domen = domen
-        self.login = login
-    
-    def connect(self, link: str, css_block: str, result_link: str):
-        pupil = None
+shodennik = session.get('https://school-5p.e-schools.info/pupil/1056949/dnevnik/quarter/28553')
+print('school5p connected')
 
-        while not pupil:
-            answer = session.post(link, data=self.login)
-            answer_bs = BeautifulSoup(answer.content, "html.parser")
-            pupils = answer_bs.select(css_block)
-            pupil = site + pupils[0]["href"] + result_link if pupils else None
-
-        return pupil
-
-
-school5p = SchoolParser(site, FormData)
-print('school5p SchoolParser initialised')
-
-user_site = school5p.connect('https://school-5p.e-schools.info/login_', user_css_block, weekler_link)
-print('site connected')
-
-pupil_bs = BeautifulSoup(session.get(user_site).content, "html.parser")
-print('pupil_bs BeutifulSoup initialised')
+pupil_bs = BeautifulSoup(shodennik.content, "html.parser")
+print('site parsed')
 
 week_days = [i.text for i in pupil_bs.select('th.lesson')]
 days_lessons = [" ".join(str(i.text).split()) for i in pupil_bs.select("td.lesson > span")]
@@ -95,5 +75,4 @@ if __name__ == '__main__':
     update_site('parsed.html')
     write_table('homeworks.txt', days=week_days, lessons=days_lessons, homeworks=lessons_homeworks)
     all_of_week = create_table(days=week_days, lessons=days_lessons, homeworks=lessons_homeworks)
-    rint(all_of_week)
     rint('Программа завершена [green]успешно[/green]. Расписание в файле [cyan]homeworks.txt[/cyan]')
