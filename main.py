@@ -2,6 +2,7 @@ import re
 import json
 import asyncio
 from time import strftime
+from datetime import datetime
 from aiogram import executor, Bot, Dispatcher, types
 from rich import print
 
@@ -55,11 +56,14 @@ async def send_today(message: types.Message):
 
 @dispatcher.message_handler(commands=['now'])
 async def send_now(message: types.Message):
-    for day in lessons.values():
+    lesson_num = 0
+    for day in homeworks.values():
         if day[0] == int(strftime('%d')):
+            print(True)
             for index, lesson in enumerate(day):
-                if isinstance(lesson, list):
-                    
+                if lesson_num < index <= int(strftime('%H')) - 7:
+                    await message.answer(template.format(*lesson))
+        print(day[0], int(strftime("%d")))
 
 
 @dispatcher.message_handler(commands=['tomorrow'])

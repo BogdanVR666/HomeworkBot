@@ -10,6 +10,7 @@ session = requests.Session()
 
 csrfclass = 'csrfmiddlewaretoken'
 
+print('getting csrf')
 # getting CSRF
 auth_html = session.get("https://school-5p.e-schools.info/login_", verify=False)
 auth_bs = BeautifulSoup(auth_html.content, "html.parser")
@@ -90,6 +91,7 @@ responce = 0
 while responce != 200:
     school5p = session.post("https://school-5p.e-schools.info/login_", data=FormData)
     responce = school5p.status_code
+    print(responce)
 
 shodennik = session.get('https://school-5p.e-schools.info/pupil/1056949/dnevnik/quarter/28553')
 print('school5p connected')
