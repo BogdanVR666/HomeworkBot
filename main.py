@@ -56,11 +56,12 @@ async def send_today(message: types.Message):
 
 @dispatcher.message_handler(commands=['now'])
 async def send_now(message: types.Message):
-    lesson_num = int(strftime('%H')) - 7
+    lesson_num = 0
     for day in homeworks.values():
         if day[0] == int(strftime('%d')):
+            print(True)
             for index, lesson in enumerate(day):
-                if index == lesson_num:
+                if lesson_num < index <= int(strftime('%H')) - 7:
                     await message.answer(template.format(*lesson))
         print(day[0], int(strftime("%d")))
 
