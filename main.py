@@ -63,7 +63,7 @@ async def send_now(message: types.Message):
         lesson_num = 1
     elif 16 < date:
         lesson_num = 8
-    else:]
+    else:
         print(date)
 
     for day in homeworks.values():
