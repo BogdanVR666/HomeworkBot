@@ -1,6 +1,7 @@
 import requests
 import re
 import json
+from time import strftime
 from urllib3 import disable_warnings
 from bs4 import BeautifulSoup
 from rich import print as rint
@@ -93,7 +94,7 @@ while responce != 200:
     responce = school5p.status_code
     print(responce)
 
-shodennik = session.get('https://school-5p.e-schools.info/pupil/1056949/dnevnik/quarter/28553')
+shodennik = session.get(strftime('https://school-5p.e-schools.info/pupil/1056949/dnevnik/quarter/28553/week/%Y-%m-%H'))
 print('school5p connected')
 
 pupil_bs = BeautifulSoup(shodennik.content, "html.parser")
