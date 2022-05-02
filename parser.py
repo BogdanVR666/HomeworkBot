@@ -94,7 +94,7 @@ while responce != 200:
     responce = school5p.status_code
     print(responce)
 
-shodennik = session.get(strftime('https://school-5p.e-schools.info/pupil/1056949/dnevnik/quarter/28553/week/%Y-%m-%H'))
+shodennik = session.get(strftime('https://school-5p.e-schools.info/pupil/1056949/dnevnik/quarter/28553/week/%Y-%m-%d'))
 print('school5p connected')
 
 pupil_bs = BeautifulSoup(shodennik.content, "html.parser")
@@ -111,13 +111,6 @@ all_of_week = create_table(days=week_days, lessons=days_lessons, homeworks=lesso
 with open('homeworks.json', 'w', encoding='UTF-8') as json_file:
     json.dump(all_of_week, json_file, ensure_ascii=False, indent=4)
 print('homeworks.json rewrited')
-
-# for days, lessons in list(all_of_week.items()):
-#     for i in range(1, len(lessons)): 
-#         if datetime.now().day == lessons[0]:
-#             # lessons[i] is (num, lesson, homeworks)
-#             pass
-#             #print(template.format(lesson=lessons[i][1], link=link, time=lesson_time))
 
 
 rint('Программа завершена [green]успешно[/green]. Расписание в файле [cyan]homeworks.txt[/cyan]')
