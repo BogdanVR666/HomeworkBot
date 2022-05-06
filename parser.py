@@ -89,21 +89,21 @@ def create_table(days: list[str], lessons: list[str], homeworks: list[str]) -> d
     return result
 
 
-responce = 0
-while responce != 200:
+response = 0
+while response != 200:
     school5p = session.post("https://school-5p.e-schools.info/login_", data=FormData)
-    responce = school5p.status_code
-    print(responce)
+    response = school5p.status_code
+    print(response)
 
-shodennik = session.get(strftime('https://school-5p.e-schools.info/pupil/1056949/dnevnik/quarter/28553/week/%Y-%m-%d'))
+diary = session.get(strftime('https://school-5p.e-schools.info/pupil/1056949/dnevnik/quarter/28553/week/%Y-%m-%d'))
 print('school5p connected')
 
-pupil_bs = BeautifulSoup(shodennik.content, "html.parser")
+pupil_bs = BeautifulSoup(diary.content, "html.parser")
 print('site parsed')
 
-week_days = [i.text for i in pupil_bs.select('th.lesson')]
-days_lessons = [" ".join(str(i.text).split()) for i in pupil_bs.select("td.lesson > span")]
-lessons_homeworks = [" ".join(str(i.text).split()) for i in pupil_bs.select("td.ht")]
+week_days = [day.text for day in pupil_bs.select('th.lesson')]
+days_lessons = [" ".join(str(lesson.text).split()) for lesson in pupil_bs.select("td.lesson > span")]
+lessons_homeworks = [" ".join(str(homework.text).split()) for homework in pupil_bs.select("td.ht")]
 print('school data initialised')
 
 update_site('parsed.html')
@@ -111,7 +111,7 @@ write_table('homeworks.txt', days=week_days, lessons=days_lessons, homeworks=les
 all_of_week = create_table(days=week_days, lessons=days_lessons, homeworks=lessons_homeworks)
 with open('homeworks.json', 'w', encoding='UTF-8') as json_file:
     json.dump(all_of_week, json_file, ensure_ascii=False, indent=4)
-print('homeworks.json rewrited')
+print('homeworks.json rewritten')
 
 
 print('Программа завершена [green]успешно[/green]. Расписание в файле [cyan]homeworks.txt[/cyan]')
