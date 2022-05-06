@@ -36,9 +36,9 @@ def return_homeworks(date):
     return result
 
 
-@dispatcher.message_handler(commands=['yesteday'])
-async def send_yestesay(message: types.Message):
-    if lessons:=return_homeworks(int(strftime('%d')) - 1):
+@dispatcher.message_handler(commands=['yesterday'])
+async def send_yesterday(message: types.Message):
+    if lessons := return_homeworks(int(strftime('%d')) - 1):
         for lesson in lessons:
             await message.answer(lesson)
     else:
@@ -47,10 +47,10 @@ async def send_yestesay(message: types.Message):
 
 @dispatcher.message_handler(commands=['today'])
 async def send_today(message: types.Message):
-    if lessons:=return_homeworks(int(strftime('%d'))):
+    if lessons := return_homeworks(int(strftime('%d'))):
         for lesson in lessons:
             await message.answer(lesson)
-    else: 
+    else:
         await message.answer('Даже я не знаю, какие сегодня уроки')
 
 
@@ -72,8 +72,8 @@ async def send_now(message: types.Message):
 
 
 @dispatcher.message_handler(commands=['tomorrow'])
-async def send_tomorrow(message:types.Message):
-    if lessons:=return_homeworks(int(strftime('%d')) + 1):
+async def send_tomorrow(message: types.Message):
+    if lessons := return_homeworks(int(strftime('%d')) + 1):
         for lesson in lessons:
             await message.answer(lesson)
     else:
