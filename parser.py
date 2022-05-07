@@ -1,7 +1,8 @@
 import requests
 import re
 import json
-from time import strftime
+import datetime
+import calendar
 from urllib3 import disable_warnings
 from bs4 import BeautifulSoup
 from rich import print
@@ -43,9 +44,16 @@ def search_time(string):
 
 
 def search_link(string: str) -> str:
-    regexp_link = re.search(r'https?://\S[^>]+', string)
+    regexp_link = re.search(r'https?://\S[^> ]+', string)
     link = regexp_link.group() if regexp_link else 'ссылок нет'
     return link
+
+
+def next_monday_date(date: datetime.date) -> datetime.date:
+    month_days = calendar.monthrange(date.year, date.month)[1]
+    day = datetime.date(2022, 1, 6).day - (datetime.date(2022, 1, 6).weekday() + 1) + 7
+    month = divmod(day, month_days)
+    return datetime.date(date.year, date.month + month[0], month[1])
 
 
 def update_site(filename: str) -> None:
@@ -95,7 +103,9 @@ while response != 200:
     response = school5p.status_code
     print(response)
 
-diary = session.get(strftime('https://school-5p.e-schools.info/pupil/1056949/dnevnik/quarter/28553/week/%Y-%m-%d'))
+monday = next_monday_date(datetime.datetime.now())
+
+diary = session.get(f'https://school-5p.e-schools.info/pupil/1056949/dnevnik/quarter/28553/week/{str(monday)}')
 print('school5p connected')
 
 pupil_bs = BeautifulSoup(diary.content, "html.parser")
