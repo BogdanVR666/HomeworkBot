@@ -66,7 +66,8 @@ def update_site(filename: str, parsed_data: BeautifulSoup) -> None:
 
 def initialise_data(parse_data: BeautifulSoup) -> tuple:
     week_days = [day.text for day in parse_data.select('th.lesson')]
-    days_lessons = [" ".join(str(lesson.text).split()) for lesson in parse_data.select("td.lesson > span")]
+    days_lessons = [" ".join(str(lesson.text).split()) for lesson in parse_data.select("td.lesson > span")
+                    if int(str(lesson.text).split(".")[0]) < 10]
     lessons_homeworks = [" ".join(str(homework.text).split()) for homework in parse_data.select("td.ht")]
     return week_days, days_lessons, lessons_homeworks
 

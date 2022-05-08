@@ -5,6 +5,7 @@ from time import strftime
 from datetime import datetime
 from aiogram import executor, Bot, Dispatcher, types
 from rich import print
+import keyboard
 
 with open('homeworks.json', 'r', encoding='UTF-8') as json_file:
     homeworks = json.load(json_file)
@@ -21,9 +22,9 @@ bot = Bot(token='5102803513:AAEJRgR_XxoaCQYG81MwTX9zLPxMiGR9vYs')
 dispatcher = Dispatcher(bot)
 
 
-async def timer(time):
-    while datetime.now() > time:
-        asyncio.sleep(30)
+# async def timer(time):
+#     while datetime.now() > time:
+#         asyncio.sleep(30)
 
 
 def return_homeworks(date):
@@ -34,6 +35,11 @@ def return_homeworks(date):
                 if isinstance(lesson, list):
                     result.append(template.format(*lesson))
     return result
+
+
+@dispatcher.message_handler(commands=['start'])
+async def start_handler(message: types.Message):
+    await message.answer(f"Привет, {message.from_user.first_name}", reply_markup=keyboard.menu)
 
 
 @dispatcher.message_handler(commands=['yesterday'])
