@@ -38,7 +38,7 @@ def search_time(string):
             lesson_time = regexp_split[0]
     elif regexp_time_24:
         lesson_time = regexp_time_24.group()
-    else: 
+    else:
         lesson_time = 'урок без времени'
     return lesson_time
 
@@ -51,48 +51,44 @@ def search_link(string: str) -> str:
 
 def next_monday_date(date: datetime.date) -> datetime.date:
     month_days = calendar.monthrange(date.year, date.month)[1]
-    day = datetime.date(2022, 1, 6).day - (datetime.date(2022, 1, 6).weekday() + 1) + 7
+    day = date.day - (date.weekday() + 1) + 7
     month = divmod(day, month_days)
     return datetime.date(date.year, date.month + month[0], month[1])
 
 
-def update_site(filename: str) -> None:
+def update_site(filename: str, parsed_data: BeautifulSoup) -> None:
     if not filename.endswith('.html'):
         assert ValueError('filetype is not html')
 
     with open(filename, "w", encoding="UTF-8") as file:
-        file.write(str(pupil_bs))
+        file.write(str(parsed_data))
 
 
-def write_table(filename: str, days: list[str], lessons: list[str], homeworks: list[str]) -> None:
-    with open(filename, "w", encoding="UTF-8") as file:
-        x = 0
-        for i, j in zip(lessons, homeworks):
-            if "1." in i and "11." not in i:
-                file.write(f"\n{days[x]}\n")
-                x += 1
-            file.write(f"{i} {j}\n") if len(i) > 3 else None
+def initialise_data(parse_data: BeautifulSoup) -> tuple:
+    week_days = [day.text for day in parse_data.select('th.lesson')]
+    days_lessons = [" ".join(str(lesson.text).split()) for lesson in parse_data.select("td.lesson > span")]
+    lessons_homeworks = [" ".join(str(homework.text).split()) for homework in parse_data.select("td.ht")]
+    return week_days, days_lessons, lessons_homeworks
 
 
-def create_table(days: list[str], lessons: list[str], homeworks: list[str]) -> dict:
-    result = dict()
+def create_table(days: list[str], lessons: list[str], homeworks: list[str], *, result: dict) -> None:
     score = -1
 
     for string in zip(lessons, homeworks):
         if string[0].startswith('1.'):
             score += 1
         try:
-            result[days[score].split()[0]].append((int(string[0][0]),
-                                                   string[0].split(maxsplit=1)[-1] if len(string[0]) > 3 else '',
-                                                   string[1],  # lesson
-                                                   search_time(string[1]),
-                                                   search_link(string[1])))
+            result[days[score]].append((int(string[0][0]),
+                                        string[0].split(maxsplit=1)[-1] if len(string[0]) > 3 else '',
+                                        string[1],  # lesson
+                                        search_time(string[1]),
+                                        search_link(string[1])))
         except KeyError:
-            result[days[score].split()[0]] = [int(days[score][-2:]),
-                                              (1, string[0].split(maxsplit=1)[-1] if len(string[0]) > 3 else '', 
-                                              string[1],
-                                              search_time(string[1]),
-                                              search_link(string[1]))]
+            result[days[score]] = [int(days[score][-2:]),
+                                   (1, string[0].split(maxsplit=1)[-1] if len(string[0]) > 3 else '',
+                                    string[1],
+                                    search_time(string[1]),
+                                    search_link(string[1]))]
 
     return result
 
@@ -105,23 +101,22 @@ while response != 200:
 
 monday = next_monday_date(datetime.datetime.now())
 
-diary = session.get(f'https://school-5p.e-schools.info/pupil/1056949/dnevnik/quarter/28553/week/{str(monday)}')
+diary_monday = session.get(f'https://school-5p.e-schools.info/pupil/1056949/dnevnik/quarter/28553/week/{str(monday)}')
+diary = session.get('https://school-5p.e-schools.info/pupil/1056949/dnevnik/quarter/28553')
 print('school5p connected')
 
-pupil_bs = BeautifulSoup(diary.content, "html.parser")
+diary_bs = BeautifulSoup(diary.content, "html.parser")
+diary_monday_bs = BeautifulSoup(diary_monday.content, "html.parser")
 print('site parsed')
 
-week_days = [day.text for day in pupil_bs.select('th.lesson')]
-days_lessons = [" ".join(str(lesson.text).split()) for lesson in pupil_bs.select("td.lesson > span")]
-lessons_homeworks = [" ".join(str(homework.text).split()) for homework in pupil_bs.select("td.ht")]
-print('school data initialised')
+update_site('parsed.html', diary_monday_bs)
+all_of_week = dict()
+create_table(result=all_of_week, *initialise_data(diary_bs))
+create_table(result=all_of_week, *initialise_data(diary_monday_bs))
 
-update_site('parsed.html')
-write_table('homeworks.txt', days=week_days, lessons=days_lessons, homeworks=lessons_homeworks)
-all_of_week = create_table(days=week_days, lessons=days_lessons, homeworks=lessons_homeworks)
 with open('homeworks.json', 'w', encoding='UTF-8') as json_file:
     json.dump(all_of_week, json_file, ensure_ascii=False, indent=4)
-print('homeworks.json rewritten')
 
+print('homeworks.json rewritten')
 
 print('Программа завершена [green]успешно[/green]. Расписание в файле [cyan]homeworks.txt[/cyan]')
