@@ -2,10 +2,8 @@ import re
 import json
 import asyncio
 from time import strftime
-from datetime import datetime
 from aiogram import executor, Bot, Dispatcher, types
 from rich import print
-import keyboard
 
 with open('homeworks.json', 'r', encoding='UTF-8') as json_file:
     homeworks = json.load(json_file)
@@ -39,7 +37,8 @@ def return_homeworks(date):
 
 @dispatcher.message_handler(commands=['start'])
 async def start_handler(message: types.Message):
-    await message.answer(f"Привет, {message.from_user.first_name}", reply_markup=keyboard.menu)
+    print(message.from_user.first_name)
+    await message.answer(f"Привет, {message.from_user.first_name}")
 
 
 @dispatcher.message_handler(commands=['yesterday'])
@@ -62,15 +61,19 @@ async def send_today(message: types.Message):
 
 @dispatcher.message_handler(commands=['now'])
 async def send_now(message: types.Message):
-    date = int(strftime('%H'))
-    if 8 <= date <= 16:
-        lesson_num = date - 7
-    elif 0 <= date < 8:
+    hour = int(strftime('%H'))
+    minute = int(strftime('%M'))
+    lesson_num = 8
+
+    if 8 <= hour <= 16:
+        if minute < 45:
+            lesson_num = hour - 7
+        else:
+            lesson_num = hour - 6
+    elif 0 <= hour < 8:
         lesson_num = 1
-    elif 16 < date:
-        lesson_num = 8
     else:
-        print(date)
+        print(hour, minute)
 
     for day in homeworks.values():
         if day[0] == int(strftime('%d')):
