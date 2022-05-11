@@ -40,7 +40,7 @@ def return_homeworks(date):
 @dispatcher.message_handler(commands=['start'])
 async def start_handler(message: types.Message):
     print(message.from_user.first_name)
-    await message.answer(f"Привет, {message.from_user.first_name}", reply_markup=keyboard.menu)
+    await message.answer(f"Привет, {message.from_user.first_name}", reply_markup=None)
 
 
 @dispatcher.message_handler(commands=['yesterday'])
