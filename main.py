@@ -5,7 +5,6 @@ from time import strftime
 from datetime import datetime
 from aiogram import executor, Bot, Dispatcher, types
 from rich import print
-import keyboard
 
 with open('homeworks.json', 'r', encoding='UTF-8') as json_file:
     homeworks = json.load(json_file)
