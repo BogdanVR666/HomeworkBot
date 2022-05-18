@@ -70,15 +70,23 @@ async def send_today(message: types.Message):
 
 @dispatcher.message_handler(commands=['now'])
 async def send_now(message: types.Message):
-    date = int(strftime('%H'))
-    if 8 <= date <= 16:
-        lesson_num = date - 7
-    elif 0 <= date < 8:
+    hour = int(strftime('%H'))
+    minute = int(strftime('%M'))
+    
+    if 8 <= hour <= 16:
+        if minute > 40:
+            lesson_num = hour - 7
+        else:
+            lesson_num = hour - 6
+            
+    elif 0 <= hour < 8:
         lesson_num = 1
-    elif 16 < date:
+        
+    elif 16 < hour:
         lesson_num = 8
+        
     else:
-        print(date)
+        print(hour, minute)
 
     for day in homeworks.values():
         if day[0] == int(strftime('%d')):
