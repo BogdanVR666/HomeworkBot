@@ -74,7 +74,7 @@ async def send_now(message: types.Message):
     minute = int(strftime('%M'))
     
     if 8 <= hour <= 16:
-        if minute > 40:
+        if minute < 40:
             lesson_num = hour - 7
         else:
             lesson_num = hour - 6
