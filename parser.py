@@ -120,4 +120,4 @@ with open('homeworks.json', 'w', encoding='UTF-8') as json_file:
 
 print('homeworks.json rewritten')
 
-print('Программа завершена [green]успешно[/green]. Расписание в файле [cyan]homeworks.txt[/cyan]')
+print('Программа завершена [green]успешно[/green]. Расписание в файле [cyan]homeworks.json[/cyan]')
