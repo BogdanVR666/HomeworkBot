@@ -13,7 +13,7 @@ template = '''
 Номер урока: {0}
 Урок: {1}
 Время: {3}
-Ссылка: {4}
+Ссылка: <a href="{4}">смотреть</a>
 '''
 
 template_edited = '''
@@ -90,7 +90,7 @@ async def send_now(message: types.Message):
 
     for day in homeworks.values():
         if day[0] == int(strftime('%d')):
-            await message.answer(template.format(*day[lesson_num]))
+            await message.answer(template.format(*day[lesson_num]), parse_mode='HTML')
 
 
 @dispatcher.message_handler(commands=['tomorrow'])
