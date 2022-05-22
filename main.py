@@ -54,7 +54,7 @@ async def start_handler(message: types.Message):
 async def send_yesterday(message: types.Message):
     if lessons := return_homeworks(int(strftime('%d')) - 1):
         for lesson in lessons:
-            await message.answer(lesson)
+            await message.answer(lesson, parse_mode='HTML')
     else:
         await message.answer('Даже я не знаю, какие вчера были уроки')
 
@@ -63,7 +63,7 @@ async def send_yesterday(message: types.Message):
 async def send_today(message: types.Message):
     if lessons := return_homeworks(int(strftime('%d'))):
         for lesson in lessons:
-            await message.answer(lesson)
+            await message.answer(lesson, parse_mode='HTML')
     else:
         await message.answer('Даже я не знаю, какие сегодня уроки')
 
@@ -97,7 +97,7 @@ async def send_now(message: types.Message):
 async def send_tomorrow(message: types.Message):
     if lessons := return_homeworks(int(strftime('%d')) + 1):
         for lesson in lessons:
-            await message.answer(lesson)
+            await message.answer(lesson, parse_mode='HTML')
     else:
         await message.answer('Даже я не знаю, какие завтра уроки')
 
