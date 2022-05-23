@@ -4,10 +4,8 @@ import asyncio
 from time import strftime
 from datetime import datetime
 from aiogram import executor, Bot, Dispatcher, types
+from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from rich import print
-
-with open('homeworks.json', 'r', encoding='UTF-8') as json_file:
-    homeworks = json.load(json_file)
 
 template = '''
 Номер урока: {0}
@@ -25,9 +23,15 @@ template_edited = '''
 Домашнее задание: {2}
 '''
 
+with open('homeworks.json', 'r', encoding='UTF-8') as json_file:
+    homeworks = json.load(json_file)
+
+
 bot = Bot(token='5102803513:AAEJRgR_XxoaCQYG81MwTX9zLPxMiGR9vYs')
 dispatcher = Dispatcher(bot)
 
+get_raw_homework_button = InlineKeyboardButton('Посмотреть запись', callback_data='get_raw_homework')
+get_raw_homework_markup = InlineKeyboardMarkup().add(get_raw_homework_button)
 
 # async def timer(time):
 #     while datetime.now() > time:
@@ -90,7 +94,7 @@ async def send_now(message: types.Message):
 
     for day in homeworks.values():
         if day[0] == int(strftime('%d')):
-            await message.answer(template.format(*day[lesson_num]), parse_mode='HTML', disable_web_page_preview=True)
+            await message.answer(template.format(*day[lesson_num]), parse_mode='HTML', disable_web_page_preview=True, reply_markup=get_raw_homework_markup)
 
 
 @dispatcher.message_handler(commands=['tomorrow'])
