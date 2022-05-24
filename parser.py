@@ -91,7 +91,7 @@ def create_table(days: list[str], lessons: list[str], homeworks: list[str], *, r
                                         string[1],  # lesson
                                         search_time(string[1]),
                                         search_link(string[1]),
-                                        generate_id(int(string[0][0], int(days[score][-2:])))))
+                                        generate_id(int(string[0][0]), int(days[score][-2:]))))
         except KeyError:
             result[days[score]] = [int(days[score][-2:]),
                                    (1, string[0].split(maxsplit=1)[-1] if len(string[0]) > 3 else '',
