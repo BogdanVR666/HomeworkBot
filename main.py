@@ -6,6 +6,7 @@ from datetime import datetime
 from aiogram import executor, Bot, Dispatcher, types
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from rich import print
+from parser import get_homework_by_id
 
 template = '''
 Номер урока: {0}
@@ -110,6 +111,7 @@ async def send_now(message: types.Message):
 async def send_tomorrow(message: types.Message):
     if lessons := return_homeworks(int(strftime('%d')) + 1):
         for lesson in lessons:
+            print(get_lesson_by_id(re.search('\d{1,2}.\d{2}.\d{2}.\d{4}').group(), homeworks.values()))
             await message.answer(lesson, parse_mode='HTML', disable_web_page_preview=True)
     else:
         await message.answer('Даже я не знаю, какие завтра уроки')
