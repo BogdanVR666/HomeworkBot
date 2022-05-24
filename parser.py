@@ -60,7 +60,7 @@ def get_lesson_by_id(data, id):
     for day in data:
         for lesson in day:
             if isinstance(lesson, list):
-                if lesson[6] == id:
+                if lesson[5] == id:
                     return lesson
             print(lesson)
         print(day)
