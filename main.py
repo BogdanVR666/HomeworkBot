@@ -20,7 +20,7 @@ template_edited = '''
 Время: {3}
 Ссылка: <a href="{4}">перейти</a>
 
-Домашнее задание: {2}
+Домашнее задание: ||{2}||
 '''
 
 with open('homeworks.json', 'r', encoding='UTF-8') as json_file:
@@ -36,7 +36,8 @@ get_raw_homework_markup = InlineKeyboardMarkup().add(get_raw_homework_button)
 
 @dispatcher.callback_query_handler(text='get_raw_homework')
 async def get_raw_homework(call: types.CallbackQuery):
-    await call.message.edit_text('none)')
+    
+    await call.message.edit_text(template_edited.format())
 
 
 # async def timer(time):
@@ -100,7 +101,7 @@ async def send_now(message: types.Message):
 
     for day in homeworks.values():
         if day[0] == int(strftime('%d')):
-            await message.answer(template.format(*day[lesson_num]), parse_mode='HTML', disable_web_page_preview=True, reply_markup=get_raw_homework_markup)
+            await message.answer(template_edit.format(*day[lesson_num]), parse_mode='HTML', disable_web_page_preview=True, reply_markup=get_raw_homework_markup)
 
 
 @dispatcher.message_handler(commands=['tomorrow'])
