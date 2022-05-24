@@ -104,7 +104,7 @@ async def send_now(message: types.Message):
 
     for day in homeworks.values():
         if day[0] == int(strftime('%d')):
-            print(get_lesson_by_id(re.search('\d{1,2}.\d{2}.\d{2}.\d{4}').group(), homeworks.values()))
+            print(get_lesson_by_id(re.search('\d{1,2}.\d{2}.\d{2}.\d{4}', template.format(*day[lesson_num])).group(), homeworks.values()))
             await message.answer(template_edited.format(*day[lesson_num]), parse_mode='HTML', disable_web_page_preview=True, reply_markup=get_raw_homework_markup)
 
 
