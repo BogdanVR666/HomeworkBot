@@ -52,7 +52,7 @@ def search_link(string: str) -> str:
     return link
 
 
-def generate_id(lesson, day, month, year):
+def generate_id(lesson: int, day: int, month: int=now_month, year: int=now_year):
     return f'{lesson}.{day:02}.{month:02}.{year}'
 
 
@@ -90,14 +90,15 @@ def create_table(days: list[str], lessons: list[str], homeworks: list[str], *, r
                                         string[0].split(maxsplit=1)[-1] if len(string[0]) > 3 else '',
                                         string[1],  # lesson
                                         search_time(string[1]),
-                                        search_link(string[1])))
+                                        search_link(string[1]),
+                                        generate_id(int(string[0][0], int(days[score][-2:])))))
         except KeyError:
             result[days[score]] = [int(days[score][-2:]),
                                    (1, string[0].split(maxsplit=1)[-1] if len(string[0]) > 3 else '',
                                     string[1],
                                     search_time(string[1]),
                                     search_link(string[1]),
-                                    generate_id(1, int(days[score][-2:], now_month, now_year)))]
+                                    generate_id(1, int(days[score][-2:])))]
 
     return result
 
