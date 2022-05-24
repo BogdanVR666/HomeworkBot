@@ -64,6 +64,7 @@ def get_lesson_by_id(data, id):
                     return lesson
             print(lesson)
         print(day)
+    print(data)
 
 
 def next_monday_date(date: datetime.date) -> datetime.date:
