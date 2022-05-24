@@ -56,7 +56,7 @@ def generate_id(lesson: int, day: int, month: int=now_month, year: int=now_year)
     return f'{lesson}.{day:02}.{month:02}.{year}'
 
 
-def get_homework_by_id(data, id):
+def get_lesson_by_id(data, id):
     for day in data:
         for lesson in day:
             if isinstance(lesson, list):
