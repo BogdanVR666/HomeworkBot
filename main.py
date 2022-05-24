@@ -20,7 +20,7 @@ template_edited = '''
 Время: {3}
 Ссылка: <a href="{4}">перейти</a>
 
-Домашнее задание: ||{2}||
+Домашнее задание: <tg-spoiler>{2}</tg-spoiler>
 '''
 
 with open('homeworks.json', 'r', encoding='UTF-8') as json_file:
