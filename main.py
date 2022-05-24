@@ -6,7 +6,7 @@ from datetime import datetime
 from aiogram import executor, Bot, Dispatcher, types
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from rich import print
-from parser import get_homework_by_id
+from parser import get_lesson_by_id
 
 template = '''
 Номер урока: {0}
