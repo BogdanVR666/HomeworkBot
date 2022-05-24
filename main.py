@@ -104,6 +104,7 @@ async def send_now(message: types.Message):
 
     for day in homeworks.values():
         if day[0] == int(strftime('%d')):
+            print(get_lesson_by_id(re.search('\d{1,2}.\d{2}.\d{2}.\d{4}').group(), homeworks.values()))
             await message.answer(template_edited.format(*day[lesson_num]), parse_mode='HTML', disable_web_page_preview=True, reply_markup=get_raw_homework_markup)
 
 
@@ -111,7 +112,6 @@ async def send_now(message: types.Message):
 async def send_tomorrow(message: types.Message):
     if lessons := return_homeworks(int(strftime('%d')) + 1):
         for lesson in lessons:
-            print(get_lesson_by_id(re.search('\d{1,2}.\d{2}.\d{2}.\d{4}').group(), homeworks.values()))
             await message.answer(lesson, parse_mode='HTML', disable_web_page_preview=True)
     else:
         await message.answer('Даже я не знаю, какие завтра уроки')
