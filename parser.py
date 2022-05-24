@@ -63,6 +63,7 @@ def get_lesson_by_id(data, id):
                 if lesson[6] == id:
                     return lesson
             print(lesson)
+        print(day)
 
 
 def next_monday_date(date: datetime.date) -> datetime.date:
