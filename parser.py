@@ -62,6 +62,7 @@ def get_homework_by_id(data, id):
             if isinstance(lesson, list):
                 if lesson[6] == id:
                     return lesson
+            print(lesson)
 
 
 def next_monday_date(date: datetime.date) -> datetime.date:
