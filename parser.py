@@ -25,6 +25,9 @@ FormData = {
     "password": "BogdanVR1"
 }
 
+now_month = datetime.datetime.now().month
+now_year = datetime.datetime.now().year
+
 
 def search_time(string):
     regexp_time_24 = re.search(r'\d{2}:\d{2}', string)
@@ -47,6 +50,10 @@ def search_link(string: str) -> str:
     regexp_link = re.search(r'https?://\S[^> ]+', string)
     link = regexp_link.group() if regexp_link else 'ссылок нет'
     return link
+
+
+def generate_id(lesson, day, month, year):
+    return f'{lesson}.{day:02}.{month:02}.{year}'
 
 
 def next_monday_date(date: datetime.date) -> datetime.date:
@@ -89,7 +96,8 @@ def create_table(days: list[str], lessons: list[str], homeworks: list[str], *, r
                                    (1, string[0].split(maxsplit=1)[-1] if len(string[0]) > 3 else '',
                                     string[1],
                                     search_time(string[1]),
-                                    search_link(string[1]))]
+                                    search_link(string[1]),
+                                    generate_id(1, int(days[score][-2:], now_month, now_year)))]
 
     return result
 
