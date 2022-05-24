@@ -26,6 +26,8 @@ ID: {5}
 Домашнее задание: {2}
 '''
 
+id_template = '\d{1,2}.\d{2}.\d{2}.\d{4}'
+
 with open('homeworks.json', 'r', encoding='UTF-8') as json_file:
     homeworks = json.load(json_file)
 
@@ -33,14 +35,23 @@ with open('homeworks.json', 'r', encoding='UTF-8') as json_file:
 bot = Bot(token='5102803513:AAEJRgR_XxoaCQYG81MwTX9zLPxMiGR9vYs')
 dispatcher = Dispatcher(bot)
 
-get_raw_homework_button = InlineKeyboardButton('Посмотреть запись', callback_data='get_raw_homework')
-get_raw_homework_markup = InlineKeyboardMarkup().add(get_raw_homework_button)
+open_raw_homework_button = InlineKeyboardButton('Посмотреть запись', callback_data='open_raw_homework')
+close_raw_homework_button = InlineKeyboardButton('Скрыть запись', callback_data='close_raw_homework')
+
+open_raw_homework_markup = InlineKeyboardMarkup().add(open_raw_homework_button)
+close_raw_homework_markup = InlineKeyboardMarkup().add(close_raw_homework_button)
 
 
-@dispatcher.callback_query_handler(text='get_raw_homework')
-async def get_raw_homework(call: types.CallbackQuery):
-    lesson = get_lesson_by_id(homeworks.values(), re.search('\d{1,2}.\d{2}.\d{2}.\d{4}', call.message.text).group())
-    await call.message.edit_text(template_edited.format(*lesson), parse_mode='HTML', disable_web_page_preview=True)
+@dispatcher.callback_query_handler(text='open_raw_homework')
+async def open_raw_homework(call: types.CallbackQuery):
+    lesson = get_lesson_by_id(homeworks.values(), re.search(id_template, call.message.text).group())
+    await call.message.edit_text(template_edited.format(*lesson), parse_mode='HTML', disable_web_page_preview=True, reply_markup=close_raw_homework_markup)
+
+
+@dispatcher.callback_query_handler(text='close_raw_homework')
+async def close_raw_homework(call: types.CallbackQuery):
+    lesson = get_lesson_by_id(homeworks.values(), re.search(id_template, call.message.text).group())
+    await call.message.edit_text(template.format(*lesson), parse_mode='HTML', disable_web_page_preview=True, reply_markup=open_raw_homework_markup)
 
 
 # async def timer(time):
@@ -68,7 +79,7 @@ async def start_handler(message: types.Message):
 async def send_yesterday(message: types.Message):
     if lessons := return_homeworks(int(strftime('%d')) - 1):
         for lesson in lessons:
-            await message.answer(lesson, parse_mode='HTML', disable_web_page_preview=True, reply_markup=get_raw_homework_markup)
+            await message.answer(lesson, parse_mode='HTML', disable_web_page_preview=True, reply_markup=open_raw_homework_markup)
     else:
         await message.answer('Даже я не знаю, какие вчера были уроки')
 
@@ -77,7 +88,7 @@ async def send_yesterday(message: types.Message):
 async def send_today(message: types.Message):
     if lessons := return_homeworks(int(strftime('%d'))):
         for lesson in lessons:
-            await message.answer(lesson, parse_mode='HTML', disable_web_page_preview=True, reply_markup=get_raw_homework_markup)
+            await message.answer(lesson, parse_mode='HTML', disable_web_page_preview=True, reply_markup=open_raw_homework_markup)
     else:
         await message.answer('Даже я не знаю, какие сегодня уроки')
 
@@ -105,14 +116,14 @@ async def send_now(message: types.Message):
     for day in homeworks.values():
         if day[0] == int(strftime('%d')):
             print()
-            await message.answer(template.format(*day[lesson_num]), parse_mode='HTML', disable_web_page_preview=True, reply_markup=get_raw_homework_markup)
+            await message.answer(template.format(*day[lesson_num]), parse_mode='HTML', disable_web_page_preview=True, reply_markup=open_raw_homework_markup)
 
 
 @dispatcher.message_handler(commands=['tomorrow'])
 async def send_tomorrow(message: types.Message):
     if lessons := return_homeworks(int(strftime('%d')) + 1):
         for lesson in lessons:
-            await message.answer(lesson, parse_mode='HTML', disable_web_page_preview=True, reply_markup=get_raw_homework_markup)
+            await message.answer(lesson, parse_mode='HTML', disable_web_page_preview=True, reply_markup=open_raw_homework_markup)
     else:
         await message.answer('Даже я не знаю, какие завтра уроки')
 
