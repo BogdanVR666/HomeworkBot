@@ -12,6 +12,7 @@ template = '''
 Урок: {1}
 Время: {3}
 Ссылка: <a href="{4}">перейти</a>
+ID: {5}
 '''
 
 template_edited = '''
@@ -19,8 +20,9 @@ template_edited = '''
 Урок: {1}
 Время: {3}
 Ссылка: <a href="{4}">перейти</a>
+ID: {5}
 
-Домашнее задание: <tg-spoiler>{2}</tg-spoiler>
+Домашнее задание: {2}
 '''
 
 with open('homeworks.json', 'r', encoding='UTF-8') as json_file:
