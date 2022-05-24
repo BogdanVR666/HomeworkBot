@@ -33,6 +33,12 @@ dispatcher = Dispatcher(bot)
 get_raw_homework_button = InlineKeyboardButton('Посмотреть запись', callback_data='get_raw_homework')
 get_raw_homework_markup = InlineKeyboardMarkup().add(get_raw_homework_button)
 
+
+@dispatcher.callback_query_handler(text='get_raw_homework')
+async def get_raw_homework(call: types.CallbackQuery):
+    await call.message.edit()
+
+
 # async def timer(time):
 #     while datetime.now() > time:
 #         asyncio.sleep(30)
