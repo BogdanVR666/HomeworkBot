@@ -36,7 +36,7 @@ get_raw_homework_markup = InlineKeyboardMarkup().add(get_raw_homework_button)
 
 @dispatcher.callback_query_handler(text='get_raw_homework')
 async def get_raw_homework(call: types.CallbackQuery):
-    await call.message.edit('none)')
+    await call.message.edit_text('none)')
 
 
 # async def timer(time):
