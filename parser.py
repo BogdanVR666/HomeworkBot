@@ -72,7 +72,7 @@ def next_monday_date(date: datetime.date) -> datetime.date:
 
 def update_site(filename: str, parsed_data: BeautifulSoup) -> None:
     if not filename.endswith('.html'):
-        assert ValueError('filetype is not html')
+        raise ValueError('filetype is not html')
 
     with open(filename, "w", encoding="UTF-8") as file:
         file.write(str(parsed_data))
