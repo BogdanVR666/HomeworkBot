@@ -42,14 +42,14 @@ open_raw_homework_markup = InlineKeyboardMarkup().add(open_raw_homework_button)
 close_raw_homework_markup = InlineKeyboardMarkup().add(close_raw_homework_button)
 
 send_settings = {"parse_mode": "HTML",
-                 "disable_wab_page_preview": True,
+                 "disable_web_page_preview": True,
                  "reply_markup": {'close': close_raw_homework_markup,
                                   'open': close_raw_homework_markup}
                  }
 
 
 def choose_setting(key, dct=send_settings):
-    return {x: dct[x][key] if isinstance(dct[x], list) else dct[x] for x in dct}
+    return {x: dct[x][key] if isinstance(dct[x], (list, dict)) else dct[x] for x in dct}
 
 
 @dispatcher.callback_query_handler(text='open_raw_homework')
