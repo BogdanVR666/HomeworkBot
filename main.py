@@ -44,7 +44,7 @@ close_raw_homework_markup = InlineKeyboardMarkup().add(close_raw_homework_button
 send_settings = {"parse_mode": "HTML",
                  "disable_web_page_preview": True,
                  "reply_markup": {'close': close_raw_homework_markup,
-                                  'open': close_raw_homework_markup}
+                                  'open': open_raw_homework_markup}
                  }
 
 
@@ -55,13 +55,13 @@ def choose_setting(key, dct=send_settings):
 @dispatcher.callback_query_handler(text='open_raw_homework')
 async def open_raw_homework(call: types.CallbackQuery):
     lesson = get_lesson_by_id(homeworks.values(), re.search(id_template, call.message.text).group())
-    await call.message.edit_text(template_edited.format(*lesson), **choose_setting('open'))
+    await call.message.edit_text(template_edited.format(*lesson), **choose_setting('close'))
 
 
 @dispatcher.callback_query_handler(text='close_raw_homework')
 async def close_raw_homework(call: types.CallbackQuery):
     lesson = get_lesson_by_id(homeworks.values(), re.search(id_template, call.message.text).group())
-    await call.message.edit_text(template.format(*lesson), **choose_setting('close'))
+    await call.message.edit_text(template.format(*lesson), **choose_setting('open'))
 
 
 # async def timer(time):
