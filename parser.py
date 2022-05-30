@@ -6,6 +6,7 @@ import calendar
 from urllib3 import disable_warnings
 from bs4 import BeautifulSoup
 from rich import print
+from config import FORM_DATA
 
 disable_warnings()
 session = requests.Session()
@@ -18,12 +19,7 @@ auth_html = session.get("https://school-5p.e-schools.info/login_", verify=False)
 auth_bs = BeautifulSoup(auth_html.content, "html.parser")
 csrf = auth_bs.select(f"input[name={csrf_class}]")[0]["value"]
 
-# logging in
-FormData = {
-    csrf_class: csrf,
-    "username": "BogdanVR666",
-    "password": "BogdanVR1"
-}
+FORM_DATA[csrf_class] = csrf
 
 now_month = datetime.datetime.now().month
 now_year = datetime.datetime.now().year
@@ -52,14 +48,15 @@ def search_link(string: str) -> str:
     return link
 
 
-generate_id = lambda lesson, day, month, year: f'{lesson}.{day:02}.{month:02}.{year}'
+def generate_id(lesson, day, month=now_month, year=now_year):
+    return f'{lesson}.{day:02}.{month:02}.{year}'
 
 
-def get_lesson_by_id(data, id):
+def get_lesson_by_id(data, lesson_id):
     for day in data:
-        fr lesson in day:
+        for lesson in day:
             if isinstance(lesson, list):
-                if lesson[5] == id:
+                if lesson[5] == lesson_id:
                     return lesson
 
 
@@ -112,7 +109,7 @@ def create_table(days: list[str], lessons: list[str], homeworks: list[str], *, r
 
 response = 0
 while response != 200:
-    school5p = session.post("https://school-5p.e-schools.info/login_", data=FormData)
+    school5p = session.post("https://school-5p.e-schools.info/login_", data=FORM_DATA)
     response = school5p.status_code
     print(response)
 
